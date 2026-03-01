@@ -4,391 +4,409 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>YesNoCal — AI Calorie Tracker</title>
-<meta name="description" content="Track nutrition with AI that learns your habits. Eventually, just confirm with Yes or No.">
+<meta name="description" content="The calorie tracker that learns to track for you. Log meals with AI camera, voice, or text. Eventually it just asks — and you tap Yes.">
+<link rel="canonical" href="https://yesnocal.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg-deep: #080807;
-    --bg: #0D0D0C;
-    --bg-card: #141413;
-    --bg-elevated: #1A1A18;
-    --border: #2A2A26;
-    --text: #E8E8E3;
-    --text-dim: #999;
-    --text-muted: #666;
-    --accent: #C8E64A;
-    --accent-dark: #A8C830;
-    --accent-glow: rgba(200, 230, 74, 0.15);
-    --accent-subtle: rgba(200, 230, 74, 0.06);
-    --serif: 'Playfair Display', Georgia, serif;
-    --sans: 'DM Sans', -apple-system, sans-serif;
-    --mono: 'JetBrains Mono', monospace;
-  }
+:root {
+  --bg: #0D0D0C;
+  --surface: #141413;
+  --text: #F5F5F0;
+  --muted: rgba(255,255,255,0.55);
+  --subtle: rgba(255,255,255,0.42);
+  --ghost: rgba(255,255,255,0.28);
+  --accent: #C8E64A;
+  --accent-dim: rgba(200,230,74,0.12);
+  --protein: #64B5F6;
+  --carb: #FFB74D;
+  --fat: #CE93D8;
+  --danger: #FF6B6B;
+  --border: rgba(255,255,255,0.08);
+}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
 
-  body {
-    font-family: var(--sans);
-    background: var(--bg-deep);
-    color: var(--text);
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
 
-  /* ===== NAV ===== */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    background: rgba(8,8,7,0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(200,230,74,0.08);
-    transition: all 0.3s;
-  }
-  .nav-inner {
-    max-width: 1100px; margin: 0 auto;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 28px;
-  }
-  .nav-brand {
-    font-family: var(--serif); font-weight: 900; font-size: 20px;
-    color: var(--text); text-decoration: none; letter-spacing: -0.5px;
-  }
-  .nav-brand span { color: var(--accent); }
-  .nav-links { display: flex; gap: 28px; align-items: center; }
-  .nav-links a {
-    color: var(--text-dim); text-decoration: none; font-size: 14px;
-    font-weight: 500; transition: color 0.2s; letter-spacing: 0.3px;
-  }
-  .nav-links a:hover { color: var(--accent); }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.serif { font-family: 'Instrument Serif', serif; }
 
-  /* ===== HERO ===== */
-  .hero {
-    min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    text-align: center; padding: 120px 28px 80px;
-    position: relative;
-    background:
-      radial-gradient(ellipse 600px 400px at 50% 35%, rgba(200,230,74,0.04), transparent),
-      radial-gradient(ellipse 800px 600px at 50% 50%, rgba(200,230,74,0.02), transparent);
-  }
-  .hero::before {
-    content: ''; position: absolute; inset: 0;
-    background-image:
-      repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(200,230,74,0.02) 49px, rgba(200,230,74,0.02) 50px),
-      repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(200,230,74,0.02) 49px, rgba(200,230,74,0.02) 50px);
-    mask-image: radial-gradient(ellipse 60% 60% at 50% 40%, black, transparent);
-    -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 40%, black, transparent);
-    pointer-events: none;
-  }
-  .hero-content { position: relative; z-index: 1; max-width: 640px; }
+/* ── Nav ── */
+nav {
+  position: fixed; top: 0; width: 100%; z-index: 100;
+  background: rgba(13,13,12,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+nav .inner {
+  max-width: 960px; margin: 0 auto;
+  padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+nav .logo {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700; font-size: 15; color: var(--text);
+  letter-spacing: -0.5px;
+}
+nav .logo span { color: var(--accent); }
+nav .links { display: flex; gap: 24px; }
+nav .links a {
+  font-size: 13px; color: var(--muted);
+  transition: color 0.2s;
+}
+nav .links a:hover { color: var(--text); text-decoration: none; }
 
-  /* App Icon */
-  .app-icon {
-    width: 120px; height: 120px; margin: 0 auto 40px;
-    border-radius: 28px; position: relative;
-    background: linear-gradient(160deg, #141413 0%, #0A0A09 100%);
-    box-shadow:
-      0 0 0 1px rgba(200,230,74,0.1),
-      0 20px 60px rgba(0,0,0,0.5),
-      0 0 80px rgba(200,230,74,0.06);
-    display: flex; align-items: center; justify-content: center;
-    animation: iconFloat 4s ease-in-out infinite;
-  }
-  @keyframes iconFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-  }
-  .app-icon svg { width: 72px; height: 72px; }
+/* ── Hero ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(200,230,74,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-block;
+  padding: 6px 14px; border-radius: 20px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(200,230,74,0.15);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 1px;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+.hero h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 400;
+  line-height: 1.15;
+  max-width: 600px;
+  margin-bottom: 16px;
+}
+.hero .sub {
+  font-size: 17px;
+  color: var(--muted);
+  max-width: 440px;
+  margin-bottom: 36px;
+}
+.hero .sub em {
+  color: var(--accent);
+  font-style: normal;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+}
+.cta-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.btn {
+  display: inline-block;
+  padding: 12px 28px; border-radius: 10px;
+  font-size: 14px; font-weight: 600;
+  transition: all 0.2s;
+  cursor: pointer; border: none;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+.btn-primary:hover { filter: brightness(1.1); text-decoration: none; }
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { border-color: var(--muted); color: var(--text); text-decoration: none; }
 
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--accent-subtle);
-    border: 1px solid rgba(200,230,74,0.12);
-    border-radius: 100px; padding: 6px 16px;
-    font-size: 12px; font-weight: 600; color: var(--accent);
-    letter-spacing: 1.5px; text-transform: uppercase;
-    margin-bottom: 28px;
-  }
-  .hero-badge::before {
-    content: ''; width: 6px; height: 6px; border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
+/* ── Sections ── */
+section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+.section-sub {
+  font-size: 15px;
+  color: var(--muted);
+  max-width: 500px;
+  margin-bottom: 48px;
+}
 
-  h1 {
-    font-family: var(--serif); font-size: clamp(42px, 6vw, 64px);
-    font-weight: 900; line-height: 1.1; margin-bottom: 20px;
-    letter-spacing: -1px;
-  }
-  h1 .accent { color: var(--accent); }
-  .hero-sub {
-    font-size: 18px; color: var(--text-dim); max-width: 480px;
-    margin: 0 auto 36px; line-height: 1.6;
-  }
-  .hero-sub em {
-    font-family: var(--serif); font-style: italic; color: var(--accent);
-  }
+/* ── How it works ── */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+.step {
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  position: relative;
+}
+.step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 48px; font-weight: 700;
+  color: rgba(200,230,74,0.08);
+  position: absolute; top: 16px; right: 20px;
+}
+.step h3 {
+  font-size: 16px; font-weight: 600;
+  margin-bottom: 8px;
+}
+.step p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
 
-  .hero-cta {
-    display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center;
-  }
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 14px 28px; border-radius: 12px; font-size: 15px;
-    font-weight: 600; text-decoration: none; transition: all 0.25s;
-    font-family: var(--sans);
-  }
-  .btn-primary {
-    background: var(--accent); color: #0D0D0C;
-    box-shadow: 0 0 24px rgba(200,230,74,0.2);
-  }
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 40px rgba(200,230,74,0.3);
-  }
-  .btn-ghost {
-    background: transparent; color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-ghost:hover {
-    border-color: var(--accent); color: var(--accent);
-  }
-  .btn svg { width: 18px; height: 18px; }
+/* ── Dual view ── */
+.dual-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 48px;
+}
+.view-card {
+  padding: 28px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+.view-card.quick {
+  background: linear-gradient(135deg, rgba(200,230,74,0.04) 0%, var(--surface) 100%);
+  border-color: rgba(200,230,74,0.12);
+}
+.view-card.full {
+  background: var(--surface);
+}
+.view-card .tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+}
+.view-card.quick .tag { background: var(--accent); color: var(--bg); }
+.view-card.full .tag { background: var(--border); color: var(--muted); }
+.view-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+.view-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.view-card ul {
+  list-style: none; margin-top: 14px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.view-card li {
+  font-size: 12px; color: var(--subtle);
+  padding-left: 16px; position: relative;
+}
+.view-card li::before {
+  content: '→'; position: absolute; left: 0;
+  color: var(--accent); font-family: 'JetBrains Mono', monospace;
+}
 
-  /* ===== SECTION GENERAL ===== */
-  section { padding: 100px 28px; }
-  .section-inner { max-width: 1100px; margin: 0 auto; }
-  .section-label {
-    font-size: 11px; font-weight: 700; letter-spacing: 3px;
-    text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
-  }
-  .section-title {
-    font-family: var(--serif); font-size: clamp(28px, 4vw, 40px);
-    font-weight: 700; margin-bottom: 16px; letter-spacing: -0.5px;
-  }
-  .section-desc {
-    font-size: 16px; color: var(--text-dim); max-width: 520px;
-    margin-bottom: 48px; line-height: 1.6;
-  }
+/* ── Features grid ── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+.feature {
+  padding: 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: border-color 0.2s;
+}
+.feature:hover { border-color: rgba(255,255,255,0.12); }
+.feature .icon {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+.feature h4 {
+  font-size: 13px; font-weight: 600;
+  margin-bottom: 4px;
+}
+.feature p {
+  font-size: 12px;
+  color: var(--subtle);
+  line-height: 1.5;
+}
+.feature .plus-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px; font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
 
-  /* ===== HOW IT WORKS ===== */
-  .how-section { background: var(--bg); }
-  .how-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-  }
-  .how-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px; padding: 32px 28px;
-    position: relative; overflow: hidden;
-    transition: all 0.3s;
-  }
-  .how-card:hover {
-    border-color: rgba(200,230,74,0.2);
-    transform: translateY(-2px);
-  }
-  .how-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity: 0; transition: opacity 0.3s;
-  }
-  .how-card:hover::before { opacity: 1; }
-  .how-num {
-    font-family: var(--serif); font-size: 48px; font-weight: 900;
-    color: rgba(200,230,74,0.08); position: absolute; top: 16px; right: 20px;
-    line-height: 1;
-  }
-  .how-icon {
-    width: 44px; height: 44px; border-radius: 12px;
-    background: var(--accent-subtle);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 20px; color: var(--accent);
-  }
-  .how-card h3 {
-    font-size: 18px; font-weight: 700; margin-bottom: 10px;
-  }
-  .how-card p {
-    font-size: 14px; color: var(--text-dim); line-height: 1.6;
-  }
+/* ── Pricing ── */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 680px;
+}
+.plan {
+  padding: 32px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.plan.featured {
+  border-color: rgba(200,230,74,0.3);
+  background: linear-gradient(135deg, rgba(200,230,74,0.04) 0%, var(--surface) 100%);
+  position: relative;
+}
+.plan .plan-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.plan.featured .plan-label { color: var(--accent); }
+.plan .price {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 36px; font-weight: 700;
+  margin-bottom: 4px;
+}
+.plan.featured .price { color: var(--accent); }
+.plan .period {
+  font-size: 12px;
+  color: var(--subtle);
+  margin-bottom: 20px;
+}
+.plan ul {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.plan li {
+  font-size: 13px;
+  color: var(--muted);
+  padding-left: 20px;
+  position: relative;
+}
+.plan li::before {
+  content: '✓';
+  position: absolute; left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+.plan .trial-note {
+  margin-top: 20px;
+  padding: 10px 14px;
+  background: var(--accent-dim);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 500;
+  text-align: center;
+}
 
-  /* ===== FEATURES ===== */
-  .features-section {
-    background: var(--bg-deep);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-  .features-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
-  }
-  .feature {
-    display: flex; gap: 16px; padding: 24px;
-    border-radius: 12px; transition: background 0.2s;
-  }
-  .feature:hover { background: rgba(200,230,74,0.03); }
-  .feature-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--accent); margin-top: 8px; flex-shrink: 0;
-    box-shadow: 0 0 12px rgba(200,230,74,0.3);
-  }
-  .feature h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-  .feature p { font-size: 14px; color: var(--text-dim); }
+/* ── Legal ── */
+.legal-section {
+  padding: 60px 24px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.legal-section h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px; font-weight: 400;
+  margin-bottom: 8px;
+}
+.legal-section .date {
+  font-size: 12px; color: var(--subtle);
+  margin-bottom: 24px;
+}
+.legal-section .tldr {
+  padding: 16px 20px;
+  background: var(--accent-dim);
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 28px;
+}
+.legal-section h3 {
+  font-size: 15px; font-weight: 600;
+  margin: 24px 0 8px;
+}
+.legal-section p, .legal-section li {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.legal-section ul { margin-left: 20px; }
 
-  /* ===== PRICING ===== */
-  .pricing-section { background: var(--bg); }
-  .pricing-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-    max-width: 900px;
-  }
-  .price-card {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: 16px; padding: 32px 28px;
-    position: relative; transition: all 0.3s;
-  }
-  .price-card:hover { transform: translateY(-2px); }
-  .price-card.featured {
-    border-color: var(--accent);
-    box-shadow: 0 0 40px rgba(200,230,74,0.08);
-  }
-  .price-card.featured::before {
-    content: 'POPULAR';
-    position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
-    background: var(--accent); color: #0D0D0C;
-    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-    padding: 4px 14px; border-radius: 0 0 8px 8px;
-  }
-  .price-tier {
-    font-size: 11px; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
-  }
-  .price-name {
-    font-family: var(--serif); font-size: 24px; font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .price-amount {
-    font-size: 36px; font-weight: 700; margin: 16px 0 4px;
-  }
-  .price-amount span { font-size: 15px; color: var(--text-dim); font-weight: 400; }
-  .price-annual {
-    font-size: 13px; color: var(--text-muted); margin-bottom: 24px;
-  }
-  .price-features { list-style: none; margin-bottom: 28px; }
-  .price-features li {
-    font-size: 14px; color: var(--text-dim); padding: 6px 0;
-    display: flex; align-items: flex-start; gap: 10px;
-  }
-  .price-features li::before {
-    content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0;
-  }
-  .price-btn {
-    display: block; text-align: center; padding: 12px;
-    border-radius: 10px; font-size: 14px; font-weight: 600;
-    text-decoration: none; transition: all 0.2s;
-    font-family: var(--sans);
-  }
-  .price-btn-primary {
-    background: var(--accent); color: #0D0D0C;
-  }
-  .price-btn-primary:hover { box-shadow: 0 0 20px rgba(200,230,74,0.25); }
-  .price-btn-ghost {
-    background: transparent; color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .price-btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+/* ── Footer ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 24px;
+  text-align: center;
+}
+footer .links { display: flex; gap: 24px; justify-content: center; margin-bottom: 12px; }
+footer .links a { font-size: 12px; color: var(--subtle); }
+footer .copy { font-size: 11px; color: var(--ghost); }
 
-  /* ===== LEGAL SECTIONS ===== */
-  .legal-section {
-    background: var(--bg-deep);
-    border-top: 1px solid var(--border);
-  }
-  .legal-content {
-    max-width: 700px;
-  }
-  .legal-content h2 {
-    font-family: var(--serif); font-size: 20px; font-weight: 700;
-    margin: 36px 0 12px; color: var(--text);
-  }
-  .legal-content h2:first-of-type { margin-top: 0; }
-  .legal-content p {
-    font-size: 15px; color: var(--text-dim); margin-bottom: 14px; line-height: 1.7;
-  }
-  .legal-content ul {
-    margin: 0 0 14px 20px; color: var(--text-dim); font-size: 15px;
-  }
-  .legal-content li { margin-bottom: 6px; }
-  .legal-content strong { color: var(--text); }
-  .legal-content a { color: var(--accent); }
-  .legal-callout {
-    background: var(--accent-subtle);
-    border-left: 3px solid var(--accent);
-    padding: 16px 20px; border-radius: 0 10px 10px 0;
-    margin: 20px 0;
-  }
-  .legal-callout p { margin: 0; color: #BBB; }
-
-  /* ===== FOOTER ===== */
-  footer {
-    background: var(--bg); border-top: 1px solid var(--border);
-    padding: 48px 28px;
-  }
-  .footer-inner {
-    max-width: 1100px; margin: 0 auto;
-    display: flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 20px;
-  }
-  .footer-brand {
-    font-family: var(--serif); font-weight: 900; font-size: 18px;
-  }
-  .footer-brand span { color: var(--accent); }
-  .footer-links { display: flex; gap: 24px; }
-  .footer-links a {
-    font-size: 13px; color: var(--text-muted); text-decoration: none;
-    transition: color 0.2s;
-  }
-  .footer-links a:hover { color: var(--accent); }
-  .footer-copy {
-    font-size: 12px; color: var(--text-muted); width: 100%;
-    text-align: center; margin-top: 24px; padding-top: 24px;
-    border-top: 1px solid var(--border);
-  }
-
-  /* ===== RESPONSIVE ===== */
-  @media (max-width: 768px) {
-    .how-grid, .features-grid, .pricing-grid {
-      grid-template-columns: 1fr;
-    }
-    .nav-links { gap: 16px; }
-    .nav-links a { font-size: 12px; }
-    section { padding: 72px 20px; }
-    .hero { padding: 100px 20px 60px; }
-  }
-  @media (max-width: 480px) {
-    .nav-links .hide-mobile { display: none; }
-  }
-
-  /* ===== ANIMATIONS ===== */
-  .fade-in {
-    opacity: 0; transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .fade-in.visible { opacity: 1; transform: translateY(0); }
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .dual-view, .pricing-grid { grid-template-columns: 1fr; }
+  nav .links { gap: 16px; }
+  nav .links a { font-size: 12px; }
+  section { padding: 60px 20px; }
+}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- Nav -->
 <nav>
-  <div class="nav-inner">
-    <a href="#" class="nav-brand">YesNo<span>Cal</span></a>
-    <div class="nav-links">
-      <a href="#how" class="hide-mobile">How It Works</a>
+  <div class="inner">
+    <div class="logo">Yes<span>N⊙</span>Cal</div>
+    <div class="links">
+      <a href="#how">How It Works</a>
+      <a href="#features">Features</a>
       <a href="#pricing">Pricing</a>
       <a href="#privacy">Privacy</a>
       <a href="#terms">Terms</a>
@@ -396,352 +414,275 @@
   </div>
 </nav>
 
-<!-- HERO -->
+<!-- Hero -->
 <section class="hero">
-  <div class="hero-content">
-    <div class="app-icon">
-      <svg viewBox="0 0 100 100" fill="none">
-        <!-- Track ring -->
-        <circle cx="50" cy="50" r="34" stroke="#1E1E1C" stroke-width="7" fill="none"/>
-        <!-- Progress arc ~82% -->
-        <circle cx="50" cy="50" r="34" stroke="url(#ring-grad)" stroke-width="7" fill="none"
-          stroke-linecap="round" stroke-dasharray="213.6 260" stroke-dashoffset="0"
-          transform="rotate(-90 50 50)"/>
-        <!-- Checkmark -->
-        <path d="M36 52 L46 62 L65 40" stroke="#F5F5F0" stroke-width="5.5"
-          stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        <!-- Glow at ring tip -->
-        <circle cx="76" cy="26" r="4" fill="#D4F055" opacity="0.5">
-          <animate attributeName="opacity" values="0.5;0.2;0.5" dur="3s" repeatCount="indefinite"/>
-        </circle>
-        <defs>
-          <linearGradient id="ring-grad" x1="0" y1="0" x2="100" y2="100">
-            <stop offset="0%" stop-color="#D4F055"/>
-            <stop offset="100%" stop-color="#A8C830"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
-
-    <div class="hero-badge">Coming Soon</div>
-
-    <h1>Track calories.<br><span class="accent">Confirm with a tap.</span></h1>
-
-    <p class="hero-sub">
-      AI that learns what you eat. Eventually, it just asks:
-      <em>"Oatmeal with blueberries again?"</em> — and you tap Yes.
-    </p>
-
-    <div class="hero-cta">
-      <a href="#pricing" class="btn btn-primary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-        See Plans
-      </a>
-      <a href="#how" class="btn btn-ghost">How It Works</a>
-    </div>
+  <div class="hero-badge">COMING SOON</div>
+  <h1 class="serif">Track calories. Confirm with a tap.</h1>
+  <p class="sub">
+    AI that learns what you eat. Eventually, it just asks:<br>
+    <em>"Oatmeal with blueberries again?"</em> — and you tap Yes.
+  </p>
+  <div class="cta-row">
+    <a href="#pricing" class="btn btn-primary">See Plans</a>
+    <a href="#how" class="btn btn-ghost">How It Works</a>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="how-section" id="how">
-  <div class="section-inner">
-    <div class="section-label">How It Works</div>
-    <div class="section-title">Three steps to effortless tracking</div>
-    <p class="section-desc">Log however you want. Voice, camera, text — YesNoCal's AI estimates the nutrition instantly.</p>
+<!-- How It Works -->
+<section id="how">
+  <div class="section-label">How It Works</div>
+  <div class="section-title serif">Three steps to effortless tracking</div>
+  <p class="section-sub">Log however you want. YesNoCal's AI estimates the nutrition instantly.</p>
 
-    <div class="how-grid">
-      <div class="how-card fade-in">
-        <div class="how-num">01</div>
-        <div class="how-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
-        </div>
-        <h3>Log Your Way</h3>
-        <p>Say it, snap it, type it, or pick from your gallery. Four input methods, one tap away.</p>
-      </div>
-      <div class="how-card fade-in">
-        <div class="how-num">02</div>
-        <div class="how-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        </div>
-        <h3>AI Estimates Instantly</h3>
-        <p>Calories, protein, carbs, fat — broken down in seconds. Edit if needed, or just trust the AI.</p>
-      </div>
-      <div class="how-card fade-in">
-        <div class="how-num">03</div>
-        <div class="how-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <h3>Eventually, Just Confirm</h3>
-        <p>YesNoCal learns your habits. Soon it asks "Same breakfast?" and you just tap Yes or No.</p>
-      </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Log Your Way</h3>
+      <p>Say it, snap it, type it, or scan it. Text input, camera, voice, barcode — all one tap away.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>AI Estimates Instantly</h3>
+      <p>Calories, protein, carbs, fat — broken down in seconds. Edit if needed, or swipe right to log again.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Eventually, Just Confirm</h3>
+      <p>YesNoCal learns your habits. Soon it asks "Same breakfast?" and you just tap Yes or No.</p>
     </div>
   </div>
-</section>
 
-<!-- FEATURES -->
-<section class="features-section" id="features">
-  <div class="section-inner">
-    <div class="section-label">Features</div>
-    <div class="section-title">Everything you need, nothing you don't</div>
-    <p class="section-desc">No accounts. No servers. Your data stays on your device.</p>
-
-    <div class="features-grid">
-      <div class="feature fade-in">
-        <div class="feature-dot"></div>
-        <div>
-          <h3>Multi-AI Support</h3>
-          <p>Use Gemini, Claude, or GPT — bring your own API key. Switch providers any time.</p>
-        </div>
-      </div>
-      <div class="feature fade-in">
-        <div class="feature-dot"></div>
-        <div>
-          <h3>Your Regulars</h3>
-          <p>Frequently eaten meals saved for instant one-tap re-logging.</p>
-        </div>
-      </div>
-      <div class="feature fade-in">
-        <div class="feature-dot"></div>
-        <div>
-          <h3>Barcode Scanner</h3>
-          <p>Scan packaged foods for instant nutrition data from Open Food Facts.</p>
-        </div>
-      </div>
-      <div class="feature fade-in">
-        <div class="feature-dot"></div>
-        <div>
-          <h3>Supplement Tracking</h3>
-          <p>Track supplements with smart reminders. Never miss a dose.</p>
-        </div>
-      </div>
-      <div class="feature fade-in">
-        <div class="feature-dot"></div>
-        <div>
-          <h3>What's Left Suggestions</h3>
-          <p>AI suggests meals that fit your remaining macros for the day.</p>
-        </div>
-      </div>
-      <div class="feature fade-in">
-        <div class="feature-dot"></div>
-        <div>
-          <h3>Pattern Engine</h3>
-          <p>Discover eating patterns and trends across weeks and months.</p>
-        </div>
-      </div>
-      <div class="feature fade-in">
-        <div class="feature-dot"></div>
-        <div>
-          <h3>Bottle Cap Badges</h3>
-          <p>Collect achievement badges with a vintage Americana twist. 18 badges, 4 themes.</p>
-        </div>
-      </div>
-      <div class="feature fade-in">
-        <div class="feature-dot"></div>
-        <div>
-          <h3>Privacy First</h3>
-          <p>No accounts, no servers, no tracking. Everything lives on your phone.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section class="pricing-section" id="pricing">
-  <div class="section-inner">
-    <div class="section-label">Pricing</div>
-    <div class="section-title">Start free, upgrade when ready</div>
-    <p class="section-desc">Full nutrition tracking is free forever. Paid plans unlock personalization and advanced AI.</p>
-
-    <div class="pricing-grid">
-      <div class="price-card fade-in">
-        <div class="price-tier">Free Tier</div>
-        <div class="price-name">YesNoCal</div>
-        <div class="price-amount">$0<span> / forever</span></div>
-        <div class="price-annual">&nbsp;</div>
-        <ul class="price-features">
-          <li>Full nutrition tracking</li>
-          <li>Voice, camera, text input</li>
-          <li>Barcode scanner</li>
-          <li>Your Regulars</li>
-          <li>Supplement tracking</li>
-          <li>Data export (CSV)</li>
-        </ul>
-        <a href="#" class="price-btn price-btn-ghost">Download Free</a>
-      </div>
-
-      <div class="price-card featured fade-in">
-        <div class="price-tier">Plus</div>
-        <div class="price-name">Plus</div>
-        <div class="price-amount">$4.99<span> / mo</span></div>
-        <div class="price-annual">or $39.99/year (save 33%)</div>
-        <ul class="price-features">
-          <li>Everything in Free</li>
-          <li>10 switchable themes</li>
-          <li>AI personality customization</li>
-          <li>Bottle cap badge collection</li>
-          <li>Instagram quote cards</li>
-        </ul>
-        <a href="#" class="price-btn price-btn-primary">Get Plus</a>
-      </div>
-
-      <div class="price-card fade-in">
-        <div class="price-tier">Pro</div>
-        <div class="price-name">Pro</div>
-        <div class="price-amount">$9.99<span> / mo</span></div>
-        <div class="price-annual">or $69.99/year (save 42%)</div>
-        <ul class="price-features">
-          <li>Everything in Plus</li>
-          <li>Advanced pattern engine</li>
-          <li>What's Left meal suggestions</li>
-          <li>Metabol Times AI digest</li>
-          <li>Priority AI features</li>
-        </ul>
-        <a href="#" class="price-btn price-btn-ghost">Get Pro</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PRIVACY POLICY -->
-<section class="legal-section" id="privacy">
-  <div class="section-inner">
-    <div class="section-label">Legal</div>
-    <div class="section-title">Privacy Policy</div>
-    <p style="font-size:13px; color:var(--text-muted); margin-bottom: 32px;">Effective: February 26, 2026 · Last updated: February 26, 2026</p>
-
-    <div class="legal-content">
-      <div class="legal-callout">
-        <p><strong>The short version:</strong> Your nutrition data stays on your device. We don't have servers, we don't collect your data, and we don't sell anything to anyone.</p>
-      </div>
-
-      <h2>1. Who We Are</h2>
-      <p>YesNoCal ("we", "us", "our") is an AI-powered nutrition tracking app. This policy explains how we handle your information.</p>
-
-      <h2>2. Data That Stays On Your Device</h2>
-      <p>YesNoCal is designed with a <strong>local-first architecture</strong>. The following data is stored exclusively on your device and is never transmitted to our servers (because we don't have servers):</p>
+  <!-- Dual View -->
+  <div class="dual-view">
+    <div class="view-card quick">
+      <div class="tag">☀️ DAY MODE</div>
+      <h3>Quick Log</h3>
+      <p>Your default view. Big calorie ring, compact meal list, one-tap logging. Open, log, close — 3 seconds.</p>
       <ul>
-        <li>Meal logs and nutrition data</li>
-        <li>Body measurements and weight history</li>
-        <li>Supplement tracking data</li>
-        <li>Macro targets and dietary goals</li>
-        <li>Badge and achievement progress</li>
-        <li>App preferences and settings</li>
-        <li>Your name (used only for display within the app)</li>
+        <li>168px hero calorie ring with protein &amp; carb flanks</li>
+        <li>Swipe right to eat again, left to delete</li>
+        <li>Speak, Photo, Gallery — one tap each</li>
+        <li>Budget nudge: "870 kcal and 95g protein left"</li>
       </ul>
-
-      <h2>3. Data Shared With Third Parties</h2>
-      <p>When you use certain features, limited data is sent to third-party services:</p>
-      <p><strong>AI Nutrition Estimation</strong> — When you log a meal using AI estimation, your meal description or photo is sent to the AI provider you've configured (such as Google Gemini, Anthropic Claude, or OpenAI). These requests are made directly from your device to the AI provider using API keys you provide. We never see or store these requests. Each provider's own privacy policy governs how they handle this data.</p>
-      <p><strong>Barcode Lookups</strong> — When you scan a food barcode, the barcode number is sent to Open Food Facts (openfoodfacts.org), an open-source food database. No personal information is included.</p>
-      <p><strong>Subscription Management</strong> — If you subscribe to YesNoCal Plus or Pro, your purchase is processed through Apple's App Store or Google Play. Subscription status is managed by RevenueCat, which receives an anonymous app user ID — not your name, email, or nutrition data. See <a href="https://www.revenuecat.com/privacy" target="_blank">RevenueCat's Privacy Policy</a>.</p>
-
-      <h2>4. Data We Do NOT Collect</h2>
-      <p>To be explicit, we do <strong>not</strong> collect: email addresses or account credentials (there are no accounts), location data, analytics or usage tracking, advertising identifiers, contact lists or social connections, or any health data beyond what you voluntarily enter.</p>
-
-      <h2>5. Device Permissions</h2>
-      <p>YesNoCal may request the following permissions, each used solely for the stated purpose:</p>
+    </div>
+    <div class="view-card full">
+      <div class="tag">🌙 FULL VIEW</div>
+      <h3>Full Dashboard</h3>
+      <p>End-of-day deep dive. All your data, all your tools, five tabs of everything.</p>
       <ul>
-        <li><strong>Camera:</strong> To photograph meals for AI analysis</li>
-        <li><strong>Photo Library:</strong> To select existing food photos for analysis</li>
-        <li><strong>Microphone:</strong> To use voice input for meal logging</li>
-        <li><strong>Notifications:</strong> To send supplement reminders and meal suggestions (only if you enable them)</li>
+        <li>Full macro rings with remaining targets</li>
+        <li>Water tracking &amp; supplement reminders</li>
+        <li>Weight trends &amp; rolling averages</li>
+        <li>The Weekly Wrap — your AI digest</li>
+        <li>Bottle cap badge collection</li>
       </ul>
-
-      <h2>6. Data Export & Deletion</h2>
-      <p>You can export all your nutrition data as a CSV file at any time from Settings. Since all data is stored locally, uninstalling the app permanently deletes all your data. You can also use the "Reset Everything" option in Settings.</p>
-
-      <h2>7. Children's Privacy</h2>
-      <p>YesNoCal is not directed at children under 13. We do not knowingly collect personal information from children.</p>
-
-      <h2>8. Changes to This Policy</h2>
-      <p>We may update this policy from time to time. Significant changes will be communicated through the app. The "last updated" date at the top reflects the most recent revision.</p>
-
-      <h2>9. Contact</h2>
-      <p>Questions about this privacy policy? Reach us at <a href="mailto:privacy@yesnocal.com">privacy@yesnocal.com</a>.</p>
     </div>
   </div>
 </section>
 
-<!-- TERMS OF SERVICE -->
-<section class="legal-section" id="terms" style="padding-bottom: 60px;">
-  <div class="section-inner">
-    <div class="section-title">Terms of Service</div>
-    <p style="font-size:13px; color:var(--text-muted); margin-bottom: 32px;">Effective: February 26, 2026 · Last updated: February 26, 2026</p>
+<!-- Features -->
+<section id="features">
+  <div class="section-label">Features</div>
+  <div class="section-title serif">Everything you need, nothing you don't</div>
+  <p class="section-sub">No accounts. No servers. Your data stays on your device.</p>
 
-    <div class="legal-content">
-      <div class="legal-callout">
-        <p><strong>The short version:</strong> YesNoCal helps you track nutrition using AI estimates. These estimates are not medical advice. Use your judgment, and don't rely solely on AI for health decisions.</p>
-      </div>
-
-      <h2>1. Acceptance</h2>
-      <p>By downloading, installing, or using YesNoCal, you agree to these Terms of Service. If you do not agree, do not use the app.</p>
-
-      <h2>2. What YesNoCal Does</h2>
-      <p>YesNoCal is a nutrition tracking tool that uses artificial intelligence to estimate the caloric and macronutrient content of meals. The app stores all data locally on your device.</p>
-
-      <h2>3. Not Medical Advice</h2>
-      <p><strong>YesNoCal is not a medical device and does not provide medical, dietary, or health advice.</strong> AI-generated nutrition estimates are approximations and may be inaccurate. You should not rely solely on YesNoCal for dietary decisions, consult a healthcare professional or registered dietitian for medical nutrition guidance, verify nutrition information for foods related to allergies or medical conditions, and use your own judgment when reviewing AI estimates.</p>
-
-      <h2>4. AI Estimation Accuracy</h2>
-      <p>Nutrition estimates provided by AI are <strong>approximate</strong>. Accuracy depends on the description or photo you provide, the AI model used, and inherent limitations of AI technology. Barcode-scanned products use data from Open Food Facts, which is community-maintained and may contain errors. YesNoCal is not responsible for inaccuracies in nutrition estimates from any source.</p>
-
-      <h2>5. Your API Keys</h2>
-      <p>YesNoCal allows you to connect your own AI provider API keys (Google Gemini, Anthropic Claude, OpenAI, etc.). You are responsible for safeguarding your API keys, any costs incurred through your API usage, and complying with each AI provider's terms of service. Keys are stored locally on your device.</p>
-
-      <h2>6. Subscriptions</h2>
-      <p>YesNoCal offers optional paid subscriptions (Plus and Pro) with additional features. Subscriptions are billed through the Apple App Store or Google Play Store, subject to their respective terms. You can manage or cancel subscriptions through your device's store settings. Refunds are handled by Apple or Google per their refund policies.</p>
-
-      <h2>7. Your Data</h2>
-      <p>All nutrition data, measurements, and preferences are stored locally on your device. You are responsible for backing up your data. Uninstalling the app deletes all data permanently. See our <a href="#privacy">Privacy Policy</a> for full details.</p>
-
-      <h2>8. Acceptable Use</h2>
-      <p>You agree not to reverse engineer, decompile, or disassemble the app, use the app for any unlawful purpose, attempt to circumvent subscription restrictions, or redistribute, resell, or sublicense the app.</p>
-
-      <h2>9. Intellectual Property</h2>
-      <p>YesNoCal, including its design, code, icons, badge artwork, and brand identity, is our intellectual property. Your nutrition data belongs to you.</p>
-
-      <h2>10. Limitation of Liability</h2>
-      <p>To the maximum extent permitted by applicable law, YesNoCal and its developers shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the app, including but not limited to health outcomes based on nutrition estimates, data loss from device failure or app uninstallation, or costs from third-party API usage. The app is provided "as is" without warranties of any kind, express or implied.</p>
-
-      <h2>11. Changes to These Terms</h2>
-      <p>We may update these terms from time to time. Continued use of YesNoCal after changes constitutes acceptance of the revised terms.</p>
-
-      <h2>12. Governing Law</h2>
-      <p>These terms are governed by the laws of the Province of Quebec, Canada, without regard to conflict of law principles.</p>
-
-      <h2>13. Contact</h2>
-      <p>Questions? Reach us at <a href="mailto:legal@yesnocal.com">legal@yesnocal.com</a>.</p>
+  <div class="features-grid">
+    <div class="feature">
+      <div class="icon">📷</div>
+      <h4>AI Camera <span class="plus-badge">PLUS</span></h4>
+      <p>Snap a photo of your meal. AI identifies it and estimates macros instantly.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🎤</div>
+      <h4>Voice Logging <span class="plus-badge">PLUS</span></h4>
+      <p>Say "chicken wrap with a side salad" and it's logged. Hands-free tracking.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">⚡</div>
+      <h4>Quick Log</h4>
+      <p>Day mode with big rings, compact meals, and one-tap actions. Open → log → done.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🔄</div>
+      <h4>Swipe to Re-log</h4>
+      <p>Swipe right on any meal to log it again. Your favorites are always one gesture away.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">📊</div>
+      <h4>Macro Dashboard</h4>
+      <p>Calorie, protein, carb, and fat rings. See exactly where you stand at a glance.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🔍</div>
+      <h4>Barcode Scanner</h4>
+      <p>Scan packaged foods for instant nutrition data from Open Food Facts.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">💧</div>
+      <h4>Water Tracking</h4>
+      <p>Track hydration with smart recommendations based on your weight and activity.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">💊</div>
+      <h4>Supplements</h4>
+      <p>Track supplements with timed reminders. Tap to log doses. Never miss one.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">📰</div>
+      <h4>The Weekly Wrap</h4>
+      <p>AI-generated weekly digest. Average intake, streak, trends — shareable to Instagram.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🏆</div>
+      <h4>Bottle Cap Badges <span class="plus-badge">PLUS</span></h4>
+      <p>Collect 18 achievement badges in vintage Americana style. Share cards included.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🎨</div>
+      <h4>10 Themes <span class="plus-badge">PLUS</span></h4>
+      <p>Switchable color themes. From neon to earth tones — make it yours.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🔒</div>
+      <h4>Privacy First</h4>
+      <p>No accounts, no servers, no tracking. Everything lives on your phone. Period.</p>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- Pricing -->
+<section id="pricing">
+  <div class="section-label">Pricing</div>
+  <div class="section-title serif">Start free, upgrade when ready</div>
+  <p class="section-sub">Full manual tracking is free forever. Plus unlocks AI and personalization.</p>
+
+  <div class="pricing-grid">
+    <div class="plan">
+      <div class="plan-label">FREE</div>
+      <div class="price">$0</div>
+      <div class="period">forever</div>
+      <ul>
+        <li>Text meal input</li>
+        <li>Barcode scanning</li>
+        <li>Quick Log day mode</li>
+        <li>Full macro dashboard</li>
+        <li>Weight tracking &amp; trends</li>
+        <li>Water tracking</li>
+        <li>Supplement reminders</li>
+        <li>The Weekly Wrap</li>
+        <li>Swipe to re-log &amp; delete</li>
+        <li>Meal history &amp; editing</li>
+        <li>Backup &amp; CSV export</li>
+      </ul>
+    </div>
+    <div class="plan featured">
+      <div class="plan-label">PLUS</div>
+      <div class="price">$4.99</div>
+      <div class="period">per month · or $39.99/year (save 33%)</div>
+      <ul>
+        <li>Everything in Free</li>
+        <li>AI camera recognition</li>
+        <li>AI voice logging</li>
+        <li>AI photo gallery analysis</li>
+        <li>Built-in Gemini Flash AI</li>
+        <li>Comedy AI personality</li>
+        <li>What's Left meal suggestions</li>
+        <li>10 switchable themes</li>
+        <li>Bottle cap badges &amp; share cards</li>
+        <li>Premium water bottle collection</li>
+      </ul>
+      <div class="trial-note">7-day free trial · no credit card required</div>
+    </div>
+  </div>
+</section>
+
+<!-- Privacy Policy -->
+<div class="legal-section" id="privacy">
+  <h2 class="serif">Privacy Policy</h2>
+  <div class="date">Effective: February 26, 2026 · Last updated: February 28, 2026</div>
+  <div class="tldr">Your nutrition data stays on your device. We don't have servers, we don't collect your data, and we don't sell anything to anyone.</div>
+
+  <h3>1. Who We Are</h3>
+  <p>YesNoCal is an AI-powered nutrition tracking app. This policy explains how we handle your information.</p>
+
+  <h3>2. Data That Stays On Your Device</h3>
+  <p>YesNoCal uses a local-first architecture. The following data is stored exclusively on your device and is never transmitted to our servers (because we don't have servers): meal logs and nutrition data, body measurements and weight history, supplement tracking data, macro targets and dietary goals, badge and achievement progress, app preferences and settings, and your name (used only for display within the app).</p>
+
+  <h3>3. Data Shared With Third Parties</h3>
+  <p><strong>AI Nutrition Estimation</strong> — When you log a meal using AI (camera, voice, or photo), your meal description or photo is sent to the AI provider (Google Gemini). These requests are made directly from your device. We never see or store these requests.</p>
+  <p><strong>Barcode Lookups</strong> — When you scan a food barcode, the barcode number is sent to Open Food Facts (openfoodfacts.org). No personal information is included.</p>
+  <p><strong>Subscription Management</strong> — If you subscribe to YesNoCal Plus, your purchase is processed through Apple's App Store or Google Play. Subscription status is managed by RevenueCat, which receives an anonymous app user ID — not your name, email, or nutrition data.</p>
+
+  <h3>4. Data We Do NOT Collect</h3>
+  <p>We do not collect: email addresses or account credentials (there are no accounts), location data, analytics or usage tracking, advertising identifiers, contact lists, or any health data beyond what you voluntarily enter.</p>
+
+  <h3>5. Device Permissions</h3>
+  <p><strong>Camera:</strong> To photograph meals for AI analysis. <strong>Photo Library:</strong> To select existing food photos. <strong>Microphone:</strong> Voice input for meal logging. <strong>Notifications:</strong> Supplement reminders and meal suggestions.</p>
+
+  <h3>6. Data Export &amp; Deletion</h3>
+  <p>Export all your data as CSV from Settings. Uninstalling the app permanently deletes all data. You can also use "Reset Everything" in Settings.</p>
+
+  <h3>7. Children's Privacy</h3>
+  <p>YesNoCal is not directed at children under 13. We do not knowingly collect personal information from children.</p>
+
+  <h3>8. Changes</h3>
+  <p>We may update this policy. Significant changes will be communicated through the app.</p>
+
+  <h3>9. Contact</h3>
+  <p>Questions? <a href="mailto:privacy@yesnocal.com">privacy@yesnocal.com</a></p>
+</div>
+
+<!-- Terms -->
+<div class="legal-section" id="terms">
+  <h2 class="serif">Terms of Service</h2>
+  <div class="date">Effective: February 26, 2026 · Last updated: February 28, 2026</div>
+  <div class="tldr">YesNoCal helps you track nutrition using AI estimates. These are not medical advice. Use your judgment.</div>
+
+  <h3>1. Acceptance</h3>
+  <p>By using YesNoCal, you agree to these Terms. If you do not agree, do not use the app.</p>
+
+  <h3>2. What YesNoCal Does</h3>
+  <p>YesNoCal is a nutrition tracking tool that uses AI to estimate caloric and macronutrient content of meals. All data is stored locally on your device.</p>
+
+  <h3>3. Not Medical Advice</h3>
+  <p>YesNoCal is not a medical device and does not provide medical, dietary, or health advice. AI nutrition estimates are approximations and may be inaccurate. Consult a healthcare professional for medical nutrition guidance.</p>
+
+  <h3>4. AI Accuracy</h3>
+  <p>Nutrition estimates are approximate. Accuracy depends on the description or photo you provide and inherent limitations of AI technology. Barcode data comes from Open Food Facts, which is community-maintained.</p>
+
+  <h3>5. Subscriptions</h3>
+  <p>YesNoCal offers an optional Plus subscription ($4.99/mo or $39.99/yr) with a 7-day free trial. Subscriptions are billed through Apple's App Store or Google Play, subject to their terms. Manage or cancel through your device's store settings.</p>
+
+  <h3>6. Your Data</h3>
+  <p>All data is stored locally. You are responsible for backups. Uninstalling deletes everything. See our Privacy Policy for details.</p>
+
+  <h3>7. Acceptable Use</h3>
+  <p>Do not reverse engineer the app, use it for unlawful purposes, circumvent subscription restrictions, or redistribute it.</p>
+
+  <h3>8. Intellectual Property</h3>
+  <p>YesNoCal's design, code, icons, badge artwork, and brand identity are our intellectual property. Your nutrition data belongs to you.</p>
+
+  <h3>9. Limitation of Liability</h3>
+  <p>To the maximum extent permitted by law, YesNoCal shall not be liable for indirect, incidental, or consequential damages, including health outcomes based on estimates or data loss. The app is provided "as is" without warranties.</p>
+
+  <h3>10. Governing Law</h3>
+  <p>These terms are governed by the laws of the Province of Quebec, Canada.</p>
+
+  <h3>11. Contact</h3>
+  <p>Questions? <a href="mailto:legal@yesnocal.com">legal@yesnocal.com</a></p>
+</div>
+
+<!-- Footer -->
 <footer>
-  <div class="footer-inner">
-    <div class="footer-brand">YesNo<span>Cal</span></div>
-    <div class="footer-links">
-      <a href="#how">How It Works</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#privacy">Privacy</a>
-      <a href="#terms">Terms</a>
-    </div>
-    <div class="footer-copy">© 2026 YesNoCal. All rights reserved. Built in Montréal.</div>
+  <div class="links">
+    <a href="#how">How It Works</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#privacy">Privacy</a>
+    <a href="#terms">Terms</a>
   </div>
+  <div class="copy">© 2026 YesNoCal. All rights reserved. Built in Montréal.</div>
 </footer>
-
-<script>
-  // Scroll-triggered fade-in
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-</script>
 
 </body>
 </html>
