@@ -586,7 +586,7 @@ footer .copy { font-size: 11px; color: var(--ghost); }
 <!-- Privacy Policy -->
 <div class="legal-section" id="privacy">
   <h2 class="serif">Privacy Policy</h2>
-  <div class="date">Effective: February 26, 2026 · Last updated: March 29, 2026</div>
+  <div class="date">Effective: February 26, 2026 · Last updated: April 7, 2026</div>
   <div class="tldr">Your nutrition data stays on your device. We don't have servers, we don't collect your data, and we don't sell anything to anyone.</div>
 
   <h3>1. Who We Are</h3>
@@ -596,7 +596,15 @@ footer .copy { font-size: 11px; color: var(--ghost); }
   <p>YesNoCal uses a local-first architecture. The following data is stored exclusively on your device and is never transmitted to our servers (because we don't have servers): meal logs and nutrition data, body measurements and weight history, supplement tracking data, macro targets and dietary goals, badge and achievement progress, app preferences and settings, and your name (used only for display within the app).</p>
 
   <h3>3. Data Shared With Third Parties</h3>
-  <p><strong>AI Nutrition Estimation</strong> — When you log a meal using AI (camera, voice, or photo), your meal description or photo is sent to the AI provider (Google Gemini). These requests are made directly from your device. We never see or store these requests.</p>
+  <p><strong>AI Nutrition Estimation</strong></p>
+  <ul>
+    <li><strong>What data:</strong> Meal descriptions (text you enter) and meal photos (if you choose to upload them)</li>
+    <li><strong>How:</strong> Transmitted via API directly from your device to the AI provider</li>
+    <li><strong>Who receives it:</strong> Google (Gemini AI, default provider). If you configure your own API key, data may be sent to OpenAI, Anthropic (Claude), or xAI (Grok) instead</li>
+    <li><strong>Purpose:</strong> To analyze your input and estimate calories and nutritional content</li>
+    <li><strong>Storage:</strong> YesNoCal does not store, access, or process this data. Processing is handled by the selected AI provider according to their own privacy policy</li>
+    <li><strong>Consent:</strong> The app requests your explicit permission before any data is sent to an AI provider. You can revoke this consent at any time in Settings</li>
+  </ul>
   <p><strong>Barcode Lookups</strong> — When you scan a food barcode, the barcode number is sent to Open Food Facts (openfoodfacts.org). No personal information is included.</p>
   <p><strong>Subscription Management</strong> — YesNoCal is currently free. If we introduce paid subscriptions in the future, purchases will be processed through Apple's App Store or Google Play. Subscription status would be managed by RevenueCat, which receives an anonymous app user ID only.</p>
 
@@ -622,7 +630,7 @@ footer .copy { font-size: 11px; color: var(--ghost); }
 <!-- Terms -->
 <div class="legal-section" id="terms">
   <h2 class="serif">Terms of Service</h2>
-  <div class="date">Effective: February 26, 2026 · Last updated: March 29, 2026</div>
+  <div class="date">Effective: February 26, 2026 · Last updated: April 7, 2026</div>
   <div class="tldr">YesNoCal helps you track nutrition using AI estimates. These are not medical advice. Use your judgment.</div>
 
   <h3>1. Acceptance</h3>
