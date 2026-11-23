@@ -157,6 +157,7 @@ footer .copy { color: var(--faint); font-weight: 600; font-size: 14px; }
       <a href="#how">How It Works</a>
       <a href="#features">Features</a>
       <a href="#pricing">Pricing</a>
+      <a href="#own-key">Own AI key</a>
       <a href="#privacy">Privacy</a>
       <a href="#terms">Terms</a>
     </div>
@@ -345,7 +346,7 @@ footer .copy { color: var(--faint); font-weight: 600; font-size: 14px; }
       <ul>
         <li>AI camera, voice and photo logging</li>
         <li>AI chat that knows your log</li>
-        <li>Built-in Gemini AI (20 requests a day)</li>
+        <li>Built-in Gemini AI (20 requests a day; not in the EU/EEA, UK or Switzerland)</li>
         <li>Or your own AI key, no daily limit</li>
         <li>Text meal input and barcodes</li>
         <li>Rings, Liquid or Bloom dashboard</li>
@@ -362,10 +363,40 @@ footer .copy { color: var(--faint); font-weight: 600; font-size: 14px; }
   </div>
 </section>
 
+<!-- Own AI key guide -->
+<div class="legal-section" id="own-key">
+  <h2 class="serif">Use your own AI key</h2>
+  <div class="date">For everyone who wants no daily limit, and for people in the EU/EEA, the UK and Switzerland</div>
+  <div class="tldr">YesNoCal's free built-in AI isn't available in the EU/EEA, the UK or Switzerland. There you can still use every AI feature by adding your own key from OpenAI, Anthropic (Claude), Google (Gemini) or xAI (Grok). Requests then go straight from your phone to that company; YesNoCal never sees them. Typical use costs a few cents to about a dollar a month.</div>
+
+  <h3>1. Get a key (pick one)</h3>
+  <ul>
+    <li><strong>OpenAI:</strong> go to <a href="https://platform.openai.com/api-keys">platform.openai.com/api-keys</a> and sign in or create an account. Add a little credit under Settings → Billing (US$5 is plenty for months). Click <em>Create new secret key</em> and copy it. It starts with <code>sk-</code>.</li>
+    <li><strong>Anthropic (Claude):</strong> go to <a href="https://console.anthropic.com/settings/keys">console.anthropic.com</a> and sign in or create an account. Buy a small amount of credit under Billing. Click <em>Create Key</em> and copy it. It starts with <code>sk-ant-</code>.</li>
+    <li><strong>Google (Gemini):</strong> go to <a href="https://aistudio.google.com/apikey">aistudio.google.com/apikey</a>, sign in with a Google account and click <em>Create API key</em>. In the EU/EEA, the UK and Switzerland, Google may ask you to set up billing (its paid tier) before the key works.</li>
+    <li><strong>xAI (Grok):</strong> go to <a href="https://console.x.ai">console.x.ai</a>, add a little credit, then create an API key and copy it. It starts with <code>xai-</code>.</li>
+  </ul>
+
+  <h3>2. Add it in YesNoCal</h3>
+  <ul>
+    <li>Open the <strong>You</strong> tab → <strong>Settings</strong> → <strong>AI engine</strong>.</li>
+    <li>Choose the company your key is from, paste the key and save.</li>
+    <li>Allow AI when the app asks. Try it: type "two eggs and toast" on Home.</li>
+  </ul>
+
+  <h3>3. Good to know</h3>
+  <ul>
+    <li><strong>Your key stays on your phone</strong>, stored encrypted. It isn't sent to YesNoCal. Make a backup if you switch phones, or just create a new key.</li>
+    <li><strong>Set a spending limit</strong> on the provider's billing page, so there are never surprises.</li>
+    <li><strong>Never share your key.</strong> If you think someone has it, delete it on the provider's site and create a new one.</li>
+    <li><strong>No key? No problem.</strong> Typing meals, barcodes, water, supplements, weight, history and trends all work without AI.</li>
+  </ul>
+</div>
+
 <!-- Privacy Policy -->
 <div class="legal-section" id="privacy">
   <h2 class="serif">Privacy Policy</h2>
-  <div class="date">Effective: February 26, 2026 · Last updated: November 18, 2026</div>
+  <div class="date">Effective: February 26, 2026 · Last updated: November 23, 2026</div>
   <div class="tldr">Everything you enter stays on your phone. There's no account, no ads and no tracking. Only if you allow AI features, the app sends what they need to an AI provider. The built-in AI is Google's free Gemini, reached through a small YesNoCal server that keeps nothing but an anonymous daily count.</div>
 
   <h3>1. Who We Are</h3>
@@ -380,6 +411,7 @@ footer .copy { color: var(--faint); font-weight: 600; font-size: 14px; }
     <li><strong>What is sent:</strong> what you type or say about a meal, and meal photos you take or pick. When you use the AI chat or ask about a meal or a day, the app also sends your profile (age, sex, height, weight, activity, goal, but <em>not</em> your name), your plan and targets, your meal history, weigh-ins, water, supplements, streaks and badges, so the AI can answer about you. Supplement reminders and celebrations may send your supplement names to write a short funny line.</li>
     <li><strong>Built-in AI (default):</strong> requests go from your phone to a YesNoCal server (hosted on Cloudflare), which forwards them to Google's Gemini API and sends back the answer. The server does not store meals, photos or questions. It keeps only a count of requests per anonymous install ID (a random code made by the app, not linked to you) to apply the free daily limit.</li>
     <li><strong>Google's free tier:</strong> the built-in AI uses Google's free Gemini service. Under Google's terms for free use, Google may use what is sent to improve its products, and human reviewers may read it. Please don't include anything you wouldn't want reviewed. To avoid this, add your own paid AI key in Settings → AI engine.</li>
+    <li><strong>EU/EEA, UK and Switzerland:</strong> the built-in AI is not offered there. Requests from these countries are turned away by the YesNoCal server before anything is read, counted or sent to Google. Only your own AI key (below) works there.</li>
     <li><strong>Your own AI key (optional):</strong> requests go straight from your phone to the provider you chose: OpenAI, Anthropic (Claude) or Google (Gemini). That provider's terms and privacy policy apply.</li>
     <li><strong>Where:</strong> AI providers and Cloudflare may process data outside your country, including in the United States.</li>
     <li><strong>Purpose:</strong> only to estimate nutrition and to answer your questions. Nothing is sold or used for ads.</li>
@@ -404,7 +436,7 @@ footer .copy { color: var(--faint); font-weight: 600; font-size: 14px; }
   </ul>
 
   <h3>8. Your Rights and Choices</h3>
-  <p>You can see, correct and delete everything YesNoCal holds about you directly in the app, because it is all on your phone. You can withdraw consent for AI features at any time (Settings → AI data sharing); the app then sends nothing to any AI provider. Depending on where you live (for example Québec, the rest of Canada, the EU or US states), you may have further rights, such as asking what we hold or filing a complaint with a privacy authority. In Québec that is the Commission d'accès à l'information. Contact us first at the address below and we'll answer within 30 days.</p>
+  <p>You can see, correct and delete everything YesNoCal holds about you directly in the app, because it is all on your phone. You can withdraw consent for AI features at any time (Settings → AI data sharing); the app then sends nothing to any AI provider. Depending on where you live (for example Québec, the rest of Canada, the EU or US states), you may have further rights, such as asking what we hold or filing a complaint with a privacy authority. In Québec that is the Commission d'accès à l'information. <strong>EU/EEA and UK:</strong> where data protection law such as the GDPR or UK GDPR applies, we rely on your explicit consent to send meal and health information to the AI provider you choose; you have the rights of access, correction, deletion, portability and objection, and you can complain to your local data protection authority. Your data is on your phone, so you can exercise most of these rights directly in the app. Contact us first at the address below and we'll answer within 30 days.</p>
 
   <h3>9. Health Information</h3>
   <p>What you enter (meals, weight, supplements, goals) is health information and is treated as sensitive. We only send it anywhere with your express consent, only for the purpose you used it for (estimating meals, answering your questions), and we never sell it, use it for advertising, or share it for any other purpose. <strong>Consumer health data (US, including Washington and Nevada):</strong> the categories are listed in section 3; they are used only to provide the AI features you ask for; they are shared only with the AI provider you use (Google, or the provider of your own key) and Cloudflare (which hosts our server), and only with your consent. You can withdraw consent or delete your data anytime as described in section 8.</p>
